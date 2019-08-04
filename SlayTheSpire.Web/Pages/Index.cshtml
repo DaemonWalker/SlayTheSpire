@@ -4,70 +4,126 @@
     ViewData["Title"] = "Home page";
 }
 
-    <div id="app">
-        <div class="card">
-            <div class="card-header" id="headUpload">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#colUpload" aria-expanded="true" aria-controls="colUpload">
-                        上传存档
-                    </button>
-                </h5>
-            </div>
-            <div id="colUpload" class="collapse show" aria-labelledby="headUpload" data-parent="#app">
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="txtSave">请复制存档内容到下面的文本框</label>
-                        <textarea id="txtSave" class="form-control" rows="6" v-model="saveStr"></textarea>
-                    </div>
-                    <input type="button" class="btn btn-light" value="上传存档" v-on:click="convertSave" />
+<div id="app">
+    <div class="card">
+        <div class="card-header" id="headUpload">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#colUpload" aria-expanded="true" aria-controls="colUpload">
+                    上传存档
+                </button>
+            </h5>
+        </div>
+        <div id="colUpload" class="collapse show" aria-labelledby="headUpload" data-parent="#app">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="txtSave">请复制存档内容到下面的文本框</label>
+                    <textarea id="txtSave" class="form-control" rows="6" v-model="saveStr"></textarea>
                 </div>
+                <input type="button" class="btn btn-light" value="上传存档" v-on:click="convertSave" />
             </div>
         </div>
-        <div class="card">
-            <div class="card-header" id="headEdit">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#colEdit" aria-expanded="false" aria-controls="colEdit">
-                        修改存档
-                    </button>
-                </h5>
-            </div>
-            <div id="colEdit" class="collapse" aria-labelledby="headEdit" data-parent="#app">
-                <div class="card-body">
-                    <div class="form-row">
-                        <div class="form-group col">
-                            <label for="txtCurrentHealth">当前生命值</label>
-                            <input type="number" id="txtCurrentHealth" class="form-control" v-model="saveData.current_health" />
-                        </div>
-                        <div class="form-group col">
-                            <label for="txtMaxHealth">最大生命值</label>
-                            <input type="number" id="txtMaxHealth" class="form-control" v-model="saveData.max_health" />
-                        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headEdit">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#colEdit" aria-expanded="false" aria-controls="colEdit">
+                    修改存档
+                </button>
+            </h5>
+        </div>
+        <div id="colEdit" class="collapse" aria-labelledby="headEdit" data-parent="#app">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="txtCurrentHealth">当前生命值</label>
+                        <input type="number" id="txtCurrentHealth" class="form-control" v-model="saveData.current_health" />
                     </div>
-                    <div class="form-group">
-                        <label for="">金币数量</label>
-                        <input type="number" class="form-control" v-model="saveData.gold" />
+                    <div class="form-group col">
+                        <label for="txtMaxHealth">最大生命值</label>
+                        <input type="number" id="txtMaxHealth" class="form-control" v-model="saveData.max_health" />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headExport">
-                <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#colExport" aria-expanded="false" aria-controls="colExport">
-                        获取新的存档
-                    </button>
-                </h5>
-            </div>
-            <div id="colExport" class="collapse" aria-labelledby="headExport" data-parent="#app">
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="">请输入存档名称</label>
-                        <input type="text" class="form-control" id="txtSaveName" v-model="saveFileName" />
+                <div class="form-group">
+                    <label for="txtGold">金币数量</label>
+                    <input type="number" class="form-control" v-model="saveData.gold" id="txtGold" />
+                </div>
+                <div class="form-group">
+                    <label for="tabCards">卡牌管理</label>
+                    <a class="float-right" href="javascript:void(0)" data-toggle="modal" data-target="#modalAddCard">添加卡片</a>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">名称</th>
+                                <th scope="col">等级</th>
+                                <th scope="col">描述</th>
+                                <th scope="col">删除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="card in saveData.cards">
+                                <td>{{getCardName(card.id)}}</td>
+                                <td><input type="number" v-model="card.upgrades" /></td>
+                                <td>{{getCardDescription(card.id)}}</td>
+                                <td><a v-on:click="deleteCard(card)" href="javascript:void(0)"><img src="~/img/x.svg" /></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="modal modal-lg fade" id="modalAddCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleAddCard">添加卡牌</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="form-row col-md-4">
+                                            <label for="drpCardColor">卡牌颜色</label>
+                                            <NewSelect Vid="drpCardColor" v-bind:OptionList="" SelectedValue="selectedCardColor"></NewSelect>
+
+                                        </div>
+                                        <div class="form-row col-md-4">
+                                            <label for="drpCardRarity">稀有度</label>
+                                            <NewSelect Vid="drpCardRarity" v-bind:OptionList=""></NewSelect>
+
+                                        </div>
+                                        <div class="form-row col-md-4">
+                                            <label for="drpCardType">卡牌类型</label>
+                                            <NewSelect Vid="drpCardType" v-bind:OptionList=""></NewSelect>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <input type="button" class="btn btn-light" v-on:click="exportSave" value="导出" />
                 </div>
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header" id="headExport">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#colExport" aria-expanded="false" aria-controls="colExport">
+                    获取新的存档
+                </button>
+            </h5>
+        </div>
+        <div id="colExport" class="collapse" aria-labelledby="headExport" data-parent="#app">
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="">请输入存档名称</label>
+                    <input type="text" class="form-control" id="txtSaveName" v-model="saveFileName" />
+                </div>
+                <input type="button" class="btn btn-light" v-on:click="exportSave" value="导出" />
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/js/index.js"></script>

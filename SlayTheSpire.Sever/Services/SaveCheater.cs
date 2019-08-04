@@ -24,7 +24,8 @@ namespace SlayTheSpire.Sever.Services
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
             var json = JsonConvert.SerializeObject(saveModel, Formatting.None, jsonSerializerSettings);
-            return json.Encode();
+
+            return json;
         }
 
         public byte[] GenerateZip(ExportModel model)
@@ -67,10 +68,24 @@ namespace SlayTheSpire.Sever.Services
             return fileBytes;
         }
 
-        public string GetSaveModel(string saveString)
+        public ServerSaveModel GetSaveModel(string saveString, ICardService cardService)
         {
+            var model = new ServerSaveModel();
             var json = saveString.Decode();
-            return json;
+            model.Save = json;
+
+            var jObj = JObject.Parse(json);
+            var cards = JArray.Parse(jObj["cards"].ToString());
+            foreach (var card in cards)
+            {
+                var id = card["id"].ToString();
+                var info = cardService.GetCardInfo(id);
+                if (model.CardInfo.ContainsKey(id) == false)
+                {
+                    model.CardInfo.Add(id, info);
+                }
+            }
+            return model;
         }
     }
 }

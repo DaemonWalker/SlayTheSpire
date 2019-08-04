@@ -9,7 +9,7 @@ namespace SlayTheSpire.Sever.Abstracts
 {
     public interface ISaveCheater
     {
-        string GetSaveModel(string saveString);
+        ServerSaveModel GetSaveModel(string saveString, ICardService cardService);
         string GenerateSave(SaveModel saveModel);
         byte[] GenerateZip(ExportModel model);
     }

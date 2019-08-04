@@ -1,18 +1,41 @@
-﻿var app = new Vue({
+﻿Vue.component('NewSelect', {
+    props: ['OptionList', 'Vid', 'SelectedValue'],
+    template: '<select v-bind:id="Vid" class="form-control" v-model="SelectedValue">' +
+        '<option v-for="op in OptionList" v-bind:value="{{op.value}}">{{op.key}}</option>' +
+        '</select>',
+    methods: {
+        updateSelectValue: function () {
+
+        }
+    }
+});
+var app = new Vue({
     el: "#app",
     data: {
         saveData: '',
         saveBak: '',
         saveStr: '',
-        saveFileName: ''
+        saveFileName: '',
+        cardInfo: { "": "" },
+        selectCardColor: ''
+    },
+    created: function () {
+
     },
     methods: {
+        deleteCard: function (card) {
+            let index = this.saveData.cards.indexOf(card);
+            this.saveData.cards.splice(index, 1);
+        },
         convertSave: async function () {
             this.postData("/api/cheater/upload", '"' + this.saveStr + '"', null,
                 res => {
-                    this.saveData = JSON.parse(res.data);
-                    this.saveBak = JSON.parse(res.data);
-                    console.log(this.saveData.gold);
+                    let model = res.data;
+                    console.log("model:" + model.save);
+                    this.saveData = JSON.parse(model.save);
+                    this.cardInfo = model.cardInfo;
+                    this.saveBak = JSON.parse(res.data.save);
+                    console.log(this.cardInfo);
                 });
         },
         exportSave: async function () {
@@ -61,6 +84,16 @@
         },
         postData: async function (apiUrl, data, responseType, then) {
             var url = await getSaveServiceUrl();
+            if (then === null) {
+                return axios({
+                    method: 'post',
+                    url: url + apiUrl,
+                    data: data,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
             if (responseType === null) {
                 axios({
                     method: 'post',
@@ -72,19 +105,32 @@
                 }).then(then).catch(function (error) {
                     console.log(error);
                 });
-            } else {
-                axios({
-                    method: 'post',
-                    url: url + apiUrl,
-                    data: data,
-                    responseType: responseType,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(then).catch(function (error) {
-                    console.log(error);
-                });
             }
+            axios({
+                method: 'post',
+                url: url + apiUrl,
+                data: data,
+                responseType: responseType,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(then).catch(function (error) {
+                console.log(error);
+            });
+
+        }
+
+    },
+    computed: {
+        getCardName() {
+            return function (cardName) {
+                return this.cardInfo[cardName].name;
+            };
+        },
+        getCardDescription() {
+            return function (cardName) {
+                return this.cardInfo[cardName].description;
+            };
         }
     }
 });

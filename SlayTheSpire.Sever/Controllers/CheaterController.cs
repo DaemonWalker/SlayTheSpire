@@ -21,16 +21,18 @@ namespace SlayTheSpire.Sever.Controllers
     public class CheaterController : ControllerBase
     {
         private readonly ISaveCheater saveCheater;
-        public CheaterController(ISaveCheater saveCheater)
+        private readonly ICardService cardService;
+        public CheaterController(ISaveCheater saveCheater, ICardService cardService)
         {
             this.saveCheater = saveCheater;
+            this.cardService = cardService;
         }
 
         [HttpPost]
         [Route("upload")]
-        public string UploadSave([FromBody] string save)
+        public ServerSaveModel UploadSave([FromBody] string save)
         {
-            return saveCheater.GetSaveModel(save);
+            return saveCheater.GetSaveModel(save, cardService);
         }
 
         [HttpPost]

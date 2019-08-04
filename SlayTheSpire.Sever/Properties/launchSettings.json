@@ -19,8 +19,8 @@
     },
     "SlayTheSpire.Sever": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/health",
+      //"launchBrowser": true,
+      //"launchUrl": "api/health",
       "applicationUrl": "http://localhost:10086",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

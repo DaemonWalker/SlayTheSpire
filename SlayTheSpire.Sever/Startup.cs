@@ -27,8 +27,10 @@ namespace SlayTheSpire.Sever
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
             services.AddScoped<ISaveCheater, SaveCheater>();
+            services.AddSingleton<IDbContext, DbContext>();
+            services.AddSingleton<ICardService, CardService>();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
