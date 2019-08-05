@@ -1,12 +1,12 @@
 ﻿Vue.component('new-select', {
     props: ['optionlist', 'vid', 'selectedvalue'],
-    template: '<select v-bind:id="vid" class="form-control" v-model="selectedvalue">' +
+    template: '<select v-bind:id="vid" class="form-control" v-model="compSelectedValue">' +
         '<option v-for="op in optionlist" v-bind:value="op.id">{{op.text}}</option>' +
         '</select>',
-    methods: {
-        updateSelectValue: function () {
-
-        }
+    data: function () {
+        return {
+            compSelectedValue: this.selectedvalue
+        };
     }
 });
 var app = new Vue({
@@ -125,9 +125,10 @@ var app = new Vue({
             }).then(then).catch(function (error) {
                 console.log(error);
             });
-
+        },
+        test: function () {
+            alert(this.selectedCardColor);
         }
-
     },
     computed: {
         getCardName() {
