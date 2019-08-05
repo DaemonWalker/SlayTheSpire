@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SlayTheSpire.Sever.Abstracts;
+using SlayTheSpire.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

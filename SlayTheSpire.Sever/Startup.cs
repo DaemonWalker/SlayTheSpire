@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SlayTheSpire.Sever.Abstracts;
+using SlayTheSpire.Sever.Extenssions;
 using SlayTheSpire.Sever.Services;
 using SlayTheSpire.Shared;
 
@@ -27,9 +28,7 @@ namespace SlayTheSpire.Sever
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ISaveCheater, SaveCheater>();
-            services.AddSingleton<IDbContext, DbContext>();
-            services.AddSingleton<ICardService, CardService>();
+            services.InjectServices();
             services.AddControllers();
         }
 

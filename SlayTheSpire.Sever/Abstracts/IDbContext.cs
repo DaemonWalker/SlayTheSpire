@@ -13,6 +13,10 @@ namespace SlayTheSpire.Sever.Abstracts
         public T ExcuteScalar<T>(string sql, IEnumerable<DbParameter> parms);
         public string ExcuteScalar(string sql, IEnumerable<DbParameter> parms);
         public DbParameter CreateParameter(string name, object value, DbType dbType);
+        public IEnumerable<T> Query<T>(string sql)
+        {
+            return this.Query<T>(sql, null);
+        }
         public List<DbParameter> CreateParamList()
         {
             return new List<DbParameter>();

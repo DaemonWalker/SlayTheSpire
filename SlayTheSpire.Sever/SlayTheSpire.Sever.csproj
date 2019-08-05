@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DB\data.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DB\data.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Consul" Version="0.7.2.6" />
     <PackageReference Include="Dapper" Version="1.60.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
@@ -14,12 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SlayTheSpire.Shared\SlayTheSpire.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="DB\data.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
-﻿Vue.component('NewSelect', {
-    props: ['OptionList', 'Vid', 'SelectedValue'],
-    template: '<select v-bind:id="Vid" class="form-control" v-model="SelectedValue">' +
-        '<option v-for="op in OptionList" v-bind:value="{{op.value}}">{{op.key}}</option>' +
+﻿Vue.component('new-select', {
+    props: ['optionlist', 'vid', 'selectedvalue'],
+    template: '<select v-bind:id="vid" class="form-control" v-model="selectedvalue">' +
+        '<option v-for="op in optionlist" v-bind:value="op.id">{{op.text}}</option>' +
         '</select>',
     methods: {
         updateSelectValue: function () {
@@ -17,10 +17,18 @@ var app = new Vue({
         saveStr: '',
         saveFileName: '',
         cardInfo: { "": "" },
-        selectCardColor: ''
+        cardColors: [],
+        rarities: [],
+        cardTypes: [],
+        selectedCardColor: ''
     },
     created: function () {
-
+        this.postData("/api/common/initCommon", '', null, res => {
+            this.cardColors = res.data.cardColors;
+            this.rarities = res.data.rarities;
+            this.cardTypes = res.data.cardTypes;
+            console.log('123' + res.data.cardColors);
+        });
     },
     methods: {
         deleteCard: function (card) {
@@ -95,7 +103,7 @@ var app = new Vue({
                 });
             }
             if (responseType === null) {
-                axios({
+                return axios({
                     method: 'post',
                     url: url + apiUrl,
                     data: data,

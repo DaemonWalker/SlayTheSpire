@@ -68,40 +68,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="modal modal-lg fade" id="modalAddCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="titleAddCard">添加卡牌</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="container">
-                                        <div class="form-row col-md-4">
-                                            <label for="drpCardColor">卡牌颜色</label>
-                                            <NewSelect Vid="drpCardColor" v-bind:OptionList="" SelectedValue="selectedCardColor"></NewSelect>
-
-                                        </div>
-                                        <div class="form-row col-md-4">
-                                            <label for="drpCardRarity">稀有度</label>
-                                            <NewSelect Vid="drpCardRarity" v-bind:OptionList=""></NewSelect>
-
-                                        </div>
-                                        <div class="form-row col-md-4">
-                                            <label for="drpCardType">卡牌类型</label>
-                                            <NewSelect Vid="drpCardType" v-bind:OptionList=""></NewSelect>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -121,6 +87,41 @@
                     <input type="text" class="form-control" id="txtSaveName" v-model="saveFileName" />
                 </div>
                 <input type="button" class="btn btn-light" v-on:click="exportSave" value="导出" />
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAddCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="titleAddCard">添加卡牌</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="drpCardColor">卡牌颜色</label>
+                                <new-select vid="drpCardColor" v-bind:optionlist="cardColors" v-bind:selectedvalue="selectedCardColor"></new-select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="drpCardRarity">稀有度</label>
+                                <new-select Vid="drpCardRarity" v-bind:OptionList="rarities"></new-select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="drpCardType">卡牌类型</label>
+                                <new-select Vid="drpCardType" v-bind:OptionList="cardTypes"></new-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
         </div>
     </div>

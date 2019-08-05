@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
 using SlayTheSpire.Sever.Abstracts;
+using SlayTheSpire.Shared;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
@@ -17,14 +19,29 @@ namespace SlayTheSpire.Sever.Services
         private IDbConnection dbConnection;
         public DbContext(IConfiguration config)
         {
+            //Dapper.SqlMapper.SetTypeMap(typeof(CommonInfoModel),
+            //    new CustomPropertyTypeMap(typeof(CommonInfoModel),
+            //    (type, columnName) =>
+            //    {
+            //        var p = type.GetProperties().FirstOrDefault(prop => prop.Name.ToLower().Replace("_", "") == columnName.ToLower().Replace("_", ""));
+            //        Console.WriteLine($"\t\t\t{p}");
+            //        return p;
+            //    }));
             this.config = config;
             dbConnection = new SQLiteConnection(this.config.GetConnectionString("SQLite"));
             dbConnection.Open();
         }
         public IEnumerable<T> Query<T>(string sql, IEnumerable<DbParameter> parms)
         {
-            var args = this.ConvertParm(parms);
-            return dbConnection.Query<T>(sql, args);
+            if (parms != null)
+            {
+                var args = this.ConvertParm(parms);
+                return dbConnection.Query<T>(sql, args);
+            }
+            else
+            {
+                return dbConnection.Query<T>(sql);
+            }
         }
         public T ExcuteScalar<T>(string sql, IEnumerable<DbParameter> parms)
         {
