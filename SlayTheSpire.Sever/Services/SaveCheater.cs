@@ -13,6 +13,11 @@ namespace SlayTheSpire.Sever.Services
 {
     public class SaveCheater : ISaveCheater
     {
+        IQueryService queryService;
+        public SaveCheater(IQueryService queryService)
+        {
+            this.queryService = queryService;
+        }
         private static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -68,7 +73,7 @@ namespace SlayTheSpire.Sever.Services
             return fileBytes;
         }
 
-        public ServerSaveModel GetSaveModel(string saveString, ICardService cardService)
+        public ServerSaveModel GetSaveModel(string saveString)
         {
             var model = new ServerSaveModel();
             var json = saveString.Decode();
@@ -79,10 +84,30 @@ namespace SlayTheSpire.Sever.Services
             foreach (var card in cards)
             {
                 var id = card["id"].ToString();
-                var info = cardService.GetCardInfo(id);
-                if (model.CardInfo.ContainsKey(id) == false)
+                var info = queryService.GetCardInfo(id);
+                if (model.TableInfo.ContainsKey(id) == false)
                 {
-                    model.CardInfo.Add(id, info);
+                    model.TableInfo.Add(id, info);
+                }
+            }
+            var relics = JArray.Parse(jObj["relics"].ToString());
+            foreach (var relic in relics)
+            {
+                var id = relic.ToString();
+                var info = queryService.GetRelicInfo(id);
+                if (model.TableInfo.ContainsKey(id) == false)
+                {
+                    model.TableInfo.Add(id, info);
+                }
+            }
+            var potions = JArray.Parse(jObj["potions"].ToString());
+            foreach (var potion in potions)
+            {
+                var id = potion.ToString();
+                var info = queryService.GetPotionInfo(id);
+                if (model.TableInfo.ContainsKey(id) == false)
+                {
+                    model.TableInfo.Add(id, info);
                 }
             }
             return model;

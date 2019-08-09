@@ -1,12 +1,12 @@
 ﻿Vue.component('new-select', {
     props: ['optionlist', 'vid', 'selectedvalue'],
-    template: '<select v-bind:id="vid" class="form-control" v-model="compSelectedValue">' +
+    template: '<select v-bind:id="vid" class="form-control" @change="alertSync($event)">' +
         '<option v-for="op in optionlist" v-bind:value="op.id">{{op.text}}</option>' +
         '</select>',
-    data: function () {
-        return {
-            compSelectedValue: this.selectedvalue
-        };
+    methods: {
+        alertSync: function (e) {
+            this.$emit('update:selectedvalue', e.target.value);
+        }
     }
 });
 var app = new Vue({
@@ -16,18 +16,30 @@ var app = new Vue({
         saveBak: '',
         saveStr: '',
         saveFileName: '',
-        cardInfo: { "": "" },
+        tableInfo: { "": "" },
         cardColors: [],
         rarities: [],
         cardTypes: [],
-        selectedCardColor: ''
+        selectedCardColor: '0',
+        selectedCardRarity: '0',
+        selectedCardType: '0',
+        queryCardName: '',
+        queryCardDescription: '0',
+        searchCards: [],
+        selectedRelicRarity: '0',
+        queryRelicName: '',
+        queryRelicDes: '',
+        queryFlavor: '',
+        searchRelics: [],
+        queryPotionName: '',
+        queryPotionDes: '',
+        searchPotions: []
     },
     created: function () {
         this.postData("/api/common/initCommon", '', null, res => {
             this.cardColors = res.data.cardColors;
             this.rarities = res.data.rarities;
             this.cardTypes = res.data.cardTypes;
-            console.log('123' + res.data.cardColors);
         });
     },
     methods: {
@@ -39,11 +51,10 @@ var app = new Vue({
             this.postData("/api/cheater/upload", '"' + this.saveStr + '"', null,
                 res => {
                     let model = res.data;
-                    console.log("model:" + model.save);
                     this.saveData = JSON.parse(model.save);
-                    this.cardInfo = model.cardInfo;
+                    this.tableInfo = model.tableInfo;
                     this.saveBak = JSON.parse(res.data.save);
-                    console.log(this.cardInfo);
+                    $('#colEdit').collapse('show');
                 });
         },
         exportSave: async function () {
@@ -52,17 +63,6 @@ var app = new Vue({
                 "bak": JSON.stringify(this.saveBak),
                 "saveName": this.saveFileName
             }, "blob", res => {
-                //let blob = new Blob([res.data], { type: "application/x-zip-compressed" });
-                //let objectUrl = URL.createObjectURL(blob);
-                //let link = document.createElement('a');
-                //link.style.display = 'none';
-                //link.href = objectUrl;
-                //link.setAttribute('download', 'excel.xlsx');
-
-                //document.body.appendChild(link);
-                //link.click();
-
-                //window.location.href = objectUrl;
                 let headers = res.headers;
                 let contentType = headers['content-type'];
                 const blob = new Blob([res.data], { type: contentType });
@@ -98,7 +98,7 @@ var app = new Vue({
                     url: url + apiUrl,
                     data: data,
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json;charset=utf-8'
                     }
                 });
             }
@@ -108,7 +108,7 @@ var app = new Vue({
                     url: url + apiUrl,
                     data: data,
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json;charset=utf-8'
                     }
                 }).then(then).catch(function (error) {
                     console.log(error);
@@ -120,25 +120,102 @@ var app = new Vue({
                 data: data,
                 responseType: responseType,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json;charset=utf-8'
                 }
             }).then(then).catch(function (error) {
                 console.log(error);
             });
         },
-        test: function () {
-            alert(this.selectedCardColor);
+        addCard: function (card) {
+            console.log("card:  " + JSON.stringify(card));
+            let info = new Object();
+            info.name = card.name;
+            info.description = card.description;
+            if (this.tableInfo[card.id] === null) {
+                this.tableInfo[card.id] = info;
+            }
+
+            let c = new Object();
+            c.id = card.id;
+            c.misc = 0;
+            c.upgrades = 0;
+            this.saveData.cards.push(c);
+        },
+        queryCards: function () {
+            let obj = new Object();
+            obj.name = this.queryCardName;
+            obj.description = this.queryCardDescription;
+            obj.color = this.selectedCardColor;
+            obj.rarity = this.selectedCardRarity;
+            obj.cardType = this.selectedCardType;
+            this.postData('/api/card/query', obj, null, res => {
+                this.searchCards = res.data;
+            });
+        },
+        queryRelic: function () {
+            let obj = new Object();
+            obj.name = this.queryRelicName;
+            obj.description = this.queryRelicDes;
+            obj.rarity = parseInt(this.selectedRelicRarity);
+            obj.flavor = this.queryFlavor;
+            this.postData('/api/relic/query', obj, null, res => {
+                this.searchRelics = res.data;
+            });
+        },
+        addRelic: function (relic) {
+            console.log("relic:  " + JSON.stringify(relic));
+            let info = new Object();
+            info.name = relic.name;
+            info.description = relic.description;
+            if (this.tableInfo[relic.id] === null ||
+                this.tableInfo[relic.id] === undefined) {
+                this.tableInfo[relic.id] = info;
+            }
+
+            let c = relic.id;
+            this.saveData.relics.push(c);
+        },
+        queryPotions: function () {
+            let obj = new Object();
+            obj.name = this.queryRelicName;
+            obj.description = this.queryRelicDes;
+            obj.rarity = parseInt(this.selectedRelicRarity);
+            obj.flavor = this.queryFlavor;
+            this.postData('/api/potion/query', obj, null, res => {
+                this.searchPotions = res.data;
+            });
+        },
+        addPotion: function (potion) {
+            console.log("potion:  " + JSON.stringify(potion));
+            let info = new Object();
+            info.name = potion.name;
+            info.description = potion.description;
+            if (this.tableInfo[potion.id] === null ||
+                this.tableInfo[potion.id] === undefined) {
+                this.tableInfo[potion.id] = info;
+            }
+
+            let c = potion.id;
+            this.saveData.potions.push(c);
+        },
+        deleteRelic: function (relic) {
+            let index = this.saveData.relics.indexOf(relic);
+            this.saveData.relics.splice(index, 1);
+        },
+        deletePotion: function (potion) {
+            let index = this.saveData.potions.indexOf(potion);
+            this.saveData.potions.splice(index, 1);
         }
     },
     computed: {
-        getCardName() {
-            return function (cardName) {
-                return this.cardInfo[cardName].name;
+        getName() {
+            return function (id) {
+                return this.tableInfo[id].name;
             };
         },
-        getCardDescription() {
-            return function (cardName) {
-                return this.cardInfo[cardName].description;
+        getDescription(id) {
+            return function (id) {
+                return this.tableInfo[id].description;
             };
         }
     }

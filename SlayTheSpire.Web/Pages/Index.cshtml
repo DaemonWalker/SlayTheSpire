@@ -53,18 +53,58 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col">名称</th>
-                                    <th scope="col">等级</th>
+                                    <th scope="col" style="width:130px">名称</th>
+                                    <th scope="col" style="width:130px">等级</th>
                                     <th scope="col">描述</th>
-                                    <th scope="col">删除</th>
+                                    <th scope="col" style="width:80px">删除</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="card in saveData.cards">
-                                    <td>{{getCardName(card.id)}}</td>
+                                    <td>{{getName(card.id)}}</td>
                                     <td><input type="number" v-model="card.upgrades" /></td>
-                                    <td>{{getCardDescription(card.id)}}</td>
+                                    <td>{{getDescription(card.id)}}</td>
                                     <td><a v-on:click="deleteCard(card)" href="javascript:void(0)"><img src="~/img/x.svg" /></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label for="">遗物管理</label>
+                        <a class="float-right" href="javascript:void(0)" data-toggle="modal" data-target="#modalAddRelics">添加遗物</a>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width:130px">名称</th>
+                                    <th scope="col">描述</th>
+                                    <th scope="col" style="width:80px">删除</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="relic in saveData.relics">
+                                    <td>{{getName(relic)}}</td>
+                                    <td>{{getDescription(relic)}}</td>
+                                    <td><a v-on:click="deleteRelic(relic)" href="javascript:void(0)"><img src="~/img/x.svg" /></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label for="">药水管理</label>
+                        <a class="float-right" href="javascript:void(0)" data-toggle="modal" data-target="#modalAddPotions">添加药水</a>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width:130px">名称</th>
+                                    <th scope="col">描述</th>
+                                    <th scope="col" style="width:80px">删除</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="potion in saveData.potions">
+                                    <td>{{getName(potion)}}</td>
+                                    <td>{{getDescription(potion)}}</td>
+                                    <td><a v-on:click="deletePotion(potion)" href="javascript:void(0)"><img src="~/img/x.svg" /></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -90,9 +130,8 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="modalAddCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="titleAddCard">添加卡牌</h5>
@@ -105,18 +144,51 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="drpCardColor">卡牌颜色</label>
-                                    <new-select vid="drpCardColor" v-bind:optionlist="cardColors" 
+                                    <new-select vid="drpCardColor" v-bind:optionlist="cardColors"
                                                 v-bind:selectedValue.sync="selectedCardColor"></new-select>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="drpCardRarity">稀有度</label>
-                                    <new-select Vid="drpCardRarity" v-bind:OptionList="rarities"></new-select>
+                                    <new-select Vid="drpCardRarity" v-bind:OptionList="rarities"
+                                                v-bind:selectedValue.sync="selectedCardRarity"></new-select>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="drpCardType">卡牌类型</label>
-                                    <new-select Vid="drpCardType" v-bind:OptionList="cardTypes"></new-select>
+                                    <new-select Vid="drpCardType" v-bind:OptionList="cardTypes"
+                                                v-bind:selectedValue.sync="selectedCardType"></new-select>
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="txtCardName">名称</label>
+                                    <input type="text" id="txtCardName" class="form-control" v-model="queryCardName" />
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="">描述</label>
+                                    <input type="text" id="txtCardDes" class="form-control" v-model="queryCardDescription" />
+                                </div>
+                            </div>
+                            <input type="button" class="btn btn-light" value="查询" v-on:click="queryCards" />
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width:130px">名称</th>
+                                        <th scope="col" style="width:80px">颜色</th>
+                                        <th scope="col" style="width:80px">稀有度</th>
+                                        <th scope="col" style="width:80px">类型</th>
+                                        <th scope="col">描述</th>
+                                        <th scope="col" style="width:80px">添加</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="card in searchCards">
+                                    <td>{{card.name}}</td>
+                                    <td>{{card.color}}</td>
+                                    <td>{{card.rarity}}</td>
+                                    <td>{{card.cardType}}</td>
+                                    <td>{{card.description}}</td>
+                                    <td><a href="javascript:void(0)" v-on:click="addCard(card)"><img src="~/img/plus.svg" /></a></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -126,8 +198,111 @@
                 </div>
             </div>
         </div>
-        {{selectedCardColor}}
-        <button v-on:click="test">test</button>
+        <div class="modal fade" id="modalAddRelics" tabindex="-1" role="dialog" aria-labelledby="modalAddRelicsLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titleAddRelics">添加遗物</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="drpRelicRarity">稀有度</label>
+                                    <new-select Vid="drpRelicRarity" v-bind:OptionList="rarities"
+                                                v-bind:selectedValue.sync="selectedRelicRarity"></new-select>
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="txtRelicName">遗物名称</label>
+                                    <input type="text" id="txtRelicName" class="form-control" v-model="queryRelicName" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="txtRelicDes">描述</label>
+                                    <input type="text" id="txtRelicDes" class="form-control" v-model="queryRelicDes" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtFlavor">吐槽</label>
+                                    <input type="text" id="txtFlavor" class="form-control" v-model="queryFlavor" />
+                                </div>
+                            </div>
+                            <input type="button" class="btn btn-light" value="查询" v-on:click="queryRelic" />
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width:130px">名称</th>
+                                        <th scope="col" style="width:80px">稀有度</th>
+                                        <th scope="col" style="width:65%">描述</th>
+                                        <th scope="col" style="width:35%">吐槽</th>
+                                        <th scope="col" style="width:80px">添加</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="relic in searchRelics">
+                                    <td>{{relic.name}}</td>
+                                    <td>{{relic.rarity}}</td>
+                                    <td>{{relic.description}}</td>
+                                    <td>{{relic.flavor}}</td>
+                                    <td><a href="javascript:void(0)" v-on:click="addRelic(relic)"><img src="~/img/plus.svg" /></a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalAddPotions" tabindex="-1" role="dialog" aria-labelledby="modalAddPotionsLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="titleAddPotions">添加药水</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="txtRelicName">药水名称</label>
+                                    <input type="text" id="txtRelicName" class="form-control" v-model="queryPotionName" />
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="txtRelicDes">描述</label>
+                                    <input type="text" id="txtRelicDes" class="form-control" v-model="queryPotionDes" />
+                                </div>
+                            </div>
+                            <input type="button" class="btn btn-light" value="查询" v-on:click="queryRelic" />
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width:130px">名称</th>
+                                        <th scope="col" style="width:65%">描述</th>
+                                        <th scope="col" style="width:80px">添加</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="potion in searchPotions">
+                                    <td>{{potion.name}}</td>
+                                    <td>{{relic.description}}</td>
+                                    <td><a href="javascript:void(0)" v-on:click="addPotion(potion)"><img src="~/img/plus.svg" /></a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 <script src="~/js/index.js"></script>

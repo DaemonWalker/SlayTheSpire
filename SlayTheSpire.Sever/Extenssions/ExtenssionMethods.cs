@@ -14,7 +14,7 @@ namespace SlayTheSpire.Sever.Extenssions
         {
             services.AddScoped<ISaveCheater, SaveCheater>();
             services.AddSingleton<IDbContext, DbContext>();
-            services.AddSingleton<ICardService, CardService>();
+            services.AddSingleton<IQueryService, QueryService>();
             services.AddSingleton<ICommonService, CommonService>();
         }
     }

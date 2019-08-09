@@ -7,10 +7,10 @@ namespace SlayTheSpire.Shared
     public class ServerSaveModel
     {
         public string Save { get; set; }
-        public Dictionary<string, CardInfoModel> CardInfo { get; set; }
+        public Dictionary<string, object> TableInfo { get; set; }
         public ServerSaveModel()
         {
-            CardInfo = new Dictionary<string, CardInfoModel>();
+            TableInfo = new Dictionary<string, object>();
         }
     }
 }

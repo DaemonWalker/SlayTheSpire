@@ -43,6 +43,10 @@ namespace SlayTheSpire.Sever.Services
                 return dbConnection.Query<T>(sql);
             }
         }
+        public IEnumerable<T> Query<T>(string sql, object parm)
+        {
+            return dbConnection.Query<T>(sql, param: parm);
+        }
         public T ExcuteScalar<T>(string sql, IEnumerable<DbParameter> parms)
         {
             var args = this.ConvertParm(parms);
@@ -55,8 +59,30 @@ namespace SlayTheSpire.Sever.Services
             parms.ToList().ForEach(p => comm.Parameters.Add(p));
             return Convert.ToString(comm.ExecuteScalar());
         }
+        public T ExcuteScalar<T>(string sql, object parm)
+        {
+            return dbConnection.Query<T>(sql, parm).SingleOrDefault();
+        }
         public DbParameter CreateParameter(string name, object value, DbType dbType)
         {
+            if (dbType == DbType.Int32)
+            {
+                if (string.IsNullOrWhiteSpace(Convert.ToString(value)))
+                {
+                    value = 0;
+                }
+                else
+                {
+                    if (int.TryParse(Convert.ToString(value), out var tempInt))
+                    {
+                        value = tempInt;
+                    }
+                    else
+                    {
+                        value = 0;
+                    }
+                }
+            }
             return new SQLiteParameter()
             {
                 DbType = dbType,

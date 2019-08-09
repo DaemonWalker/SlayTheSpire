@@ -9,9 +9,9 @@ namespace SlayTheSpire.Sever.Services
 {
     public class CommonService : ICommonService
     {
-        const string SELECT_ALL_CARDTYPE = @"SELECT T.ID, T.TEXT Text FROM CARDTYPE T";
-        const string SELECT_ALL_RARITY = @"SELECT T.ID, T.TEXT Text FROM RARITY T";
-        const string SELECT_ALL_COLOR = @"SELECT T.ID, T.TEXT Text FROM Color T";
+        const string SELECT_ALL_CARDTYPE = @"SELECT 0 ID ,'' Text UNION ALL SELECT T.ID, T.TEXT Text FROM CARDTYPE T ";
+        const string SELECT_ALL_RARITY = @"SELECT 0 ID ,'' Text UNION ALL SELECT T.ID, T.TEXT Text FROM RARITY T";
+        const string SELECT_ALL_COLOR = @"SELECT 0 ID ,'' Text UNION ALL SELECT T.ID, T.TEXT Text FROM Color T";
         private IDbContext dbContext;
         public CommonService(IDbContext dbContext)
         {
