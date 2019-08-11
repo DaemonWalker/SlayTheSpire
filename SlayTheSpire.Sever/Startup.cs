@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using SlayTheSpire.Sever.Abstracts;
 using SlayTheSpire.Sever.Extenssions;
 using SlayTheSpire.Sever.Services;
@@ -30,10 +31,15 @@ namespace SlayTheSpire.Sever
         {
             services.InjectServices();
             services.AddControllers();
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo() { Title = "É±Â¾¼âËþ´æµµÐÞ¸ÄÆ÷½Ó¿ÚÎÄµµ", Version = "1.0" });
+                options.DocInclusionPredicate((docName, description) => true);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, IConfiguration configuration)
         {
             if (env.IsDevelopment())
             {
@@ -49,18 +55,22 @@ namespace SlayTheSpire.Sever
             {
                 endpoints.MapControllers();
             });
-
             app.RegisterConsul(lifetime,
                 new Consul.ServiceEntry()
                 {
                     Service = new Consul.AgentService()
                     {
-                        Port = 10086,
-                        Address = "127.0.0.1",
+                        Port = Convert.ToInt32(configuration.GetValue<string>("urls").Split(':')[2]),
+                        Address = configuration.GetValue<string>("urls").Split(':')[0].Replace("//", ""),
                         Service = Constances.SAVE_SERVICE_NAME
                     }
                 });
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "É±Â¾¼âËþ´æµµÐÞ¸ÄÆ÷½Ó¿ÚÎÄµµ");
+            });
 
         }
     }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SlayTheSpire.Shared;
 
 namespace SlayTheSpire.Web
 {
@@ -28,7 +29,7 @@ namespace SlayTheSpire.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, IConfiguration configuration)
         {
             if (env.IsDevelopment())
             {
@@ -52,6 +53,17 @@ namespace SlayTheSpire.Web
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
+
+            app.RegisterConsul(lifetime,
+                new Consul.ServiceEntry()
+                {
+                    Service = new Consul.AgentService()
+                    {
+                        Port = configuration.GetValue<string>("urls").Split(':').Length > 2 ? Convert.ToInt32(configuration.GetValue<string>("urls").Split(':')[2]) : 80,
+                        Address = configuration.GetValue<string>("urls").Split(':')[1].Replace("//", ""),
+                        Service = Constances.SAVE_WEB_NAME
+                    }
+                });
         }
     }
 }
