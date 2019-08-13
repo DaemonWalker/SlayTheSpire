@@ -40,7 +40,9 @@ namespace SlayTheSpire.Web
             services.AddControllers();
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AddPageRoute("/index", "");
+                options.Conventions
+                    .AddPageRoute("/index", "")
+                    .AddPageRoute("/about", "about.html");
             });
         }
         /// <summary>
