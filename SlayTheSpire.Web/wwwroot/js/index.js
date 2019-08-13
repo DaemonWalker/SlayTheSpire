@@ -5,7 +5,12 @@
         '</select>',
     methods: {
         alertSync: function (e) {
-            this.$emit('update:selectedvalue', e.target.value);
+            if (e.target.value !== "") {
+                this.$emit('update:selectedvalue', parseInt(e.target.value));
+            }
+            else {
+                this.$emit('update:selectedvalue', 0);
+            }
         }
     }
 });
@@ -20,13 +25,13 @@ var app = new Vue({
         cardColors: [],
         rarities: [],
         cardTypes: [],
-        selectedCardColor: '0',
-        selectedCardRarity: '0',
-        selectedCardType: '0',
+        selectedCardColor: 0,
+        selectedCardRarity: 0,
+        selectedCardType: 0,
         queryCardName: '',
-        queryCardDescription: '0',
+        queryCardDescription: '',
         searchCards: [],
-        selectedRelicRarity: '0',
+        selectedRelicRarity: 0,
         queryRelicName: '',
         queryRelicDes: '',
         queryFlavor: '',
@@ -91,24 +96,26 @@ var app = new Vue({
             }
         },
         postData: async function (apiUrl, data, responseType, then) {
-            var url = await getSaveServiceUrl();
+            //var url = await PostData();
             if (then === null) {
                 return axios({
                     method: 'post',
-                    url: url + apiUrl,
-                    data: data,
+                    url: 'api/consul/postdata',
+                    data: '"' + apiUrl + '"',
                     headers: {
-                        'Content-Type': 'application/json;charset=utf-8'
+                        'Content-Type': 'application/json;charset=utf-8',
+                        'postData': JSON.stringify(data)
                     }
                 });
             }
             if (responseType === null) {
                 return axios({
                     method: 'post',
-                    url: url + apiUrl,
-                    data: data,
+                    url: 'api/consul/postdata',
+                    data: '"' + apiUrl + '"',
                     headers: {
-                        'Content-Type': 'application/json;charset=utf-8'
+                        'Content-Type': 'application/json;charset=utf-8',
+                        'postData': JSON.stringify(data)
                     }
                 }).then(then).catch(function (error) {
                     console.log(error);
@@ -116,11 +123,12 @@ var app = new Vue({
             }
             axios({
                 method: 'post',
-                url: url + apiUrl,
-                data: data,
+                url: 'api/consul/postdata',
                 responseType: responseType,
+                data: '"' + apiUrl + '"',
                 headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'postData': JSON.stringify(data)
                 }
             }).then(then).catch(function (error) {
                 console.log(error);

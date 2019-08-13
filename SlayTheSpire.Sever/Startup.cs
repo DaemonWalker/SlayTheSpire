@@ -30,7 +30,7 @@ namespace SlayTheSpire.Sever
         public void ConfigureServices(IServiceCollection services)
         {
             services.InjectServices();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo() { Title = "É±Â¾¼âËþ´æµµÐÞ¸ÄÆ÷½Ó¿ÚÎÄµµ", Version = "1.0" });
@@ -61,7 +61,7 @@ namespace SlayTheSpire.Sever
                     Service = new Consul.AgentService()
                     {
                         Port = Convert.ToInt32(configuration.GetValue<string>("urls").Split(':')[2]),
-                        Address = configuration.GetValue<string>("urls").Split(':')[0].Replace("//", ""),
+                        Address = configuration.GetValue<string>("urls").Split(':')[1].Replace("//", ""),
                         Service = Constances.SAVE_SERVICE_NAME
                     }
                 });
