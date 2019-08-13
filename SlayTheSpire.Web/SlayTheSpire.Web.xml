@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SlayTheSpire.Web</name>
+    </assembly>
+    <members>
+        <member name="T:SlayTheSpire.Web.Controllers.ConsulController">
+            <summary>
+            服务发现接口
+            </summary>
+        </member>
+        <member name="M:SlayTheSpire.Web.Controllers.ConsulController.PostData(System.String,System.String)">
+            <summary>
+            请求服务接口
+            </summary>
+            <param name="postData">请求数据</param>
+            <param name="requestUrl">接口地址</param>
+            <returns></returns>
+        </member>
+        <member name="T:SlayTheSpire.Web.Controllers.HealthController">
+            <summary>
+            健康检查
+            </summary>
+        </member>
+        <member name="M:SlayTheSpire.Web.Controllers.HealthController.ok">
+            <summary>
+            Consul健康检查接口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:SlayTheSpire.Web.Program">
+            <summary>
+            程序入口
+            </summary>
+        </member>
+        <member name="M:SlayTheSpire.Web.Program.Main(System.String[])">
+            <summary>
+            程序入口
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:SlayTheSpire.Web.Program.CreateHostBuilder(System.String[])">
+            <summary>
+            WebHost Builder
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SlayTheSpire.Web.Startup">
+            <summary>
+            WebHost Builder启动类
+            </summary>
+        </member>
+        <member name="M:SlayTheSpire.Web.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            构造函数
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="P:SlayTheSpire.Web.Startup.Configuration">
+            <summary>
+            获取config信息
+            </summary>
+        </member>
+        <member name="M:SlayTheSpire.Web.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SlayTheSpire.Web.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Hosting.IHostApplicationLifetime,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+            <param name="lifetime"></param>
+            <param name="configuration"></param>
+        </member>
+    </members>
+</doc>

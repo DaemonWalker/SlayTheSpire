@@ -1,0 +1,30 @@
+﻿@page "about.html"
+@model PrivacyModel
+@{
+    ViewData["Title"] = "关于";
+}
+<div class="alert alert-secondary" role="alert">
+    <ul class="live">
+        <li>存档在游戏文件夹下，saves文件夹内。用记事本打开复制到网页里面就行。</li>
+        <li>下载下来是个压缩包，一个是修改之后的存档，另外一个bak是备份。</li>
+        <li>暂时不涉及Mod的新增卡片和遗物，使用可能会导致出错</li>
+    </ul>
+</div>
+<div class="alert alert-dark" role="alert">
+    <ul class="live">
+        <li>
+            用到的轮子
+            <ul class="live type2">
+                <li>
+                    前端: Vue,axios,Bootstrap,JQuery(懒得跟Vue合了)
+                </li>
+                <li>
+                    后端: .Net Core 3.0 preview7,Swashbuckle.AspNetCore,Newtonsoft.Json,Sqlite,Dapper,Consul
+                </li>
+            </ul>
+        </li>
+        <li>
+            Github: <a href="https://github.com/DaemonWalker/SlayTheSpire">https://github.com/DaemonWalker/SlayTheSpire</a>
+        </li>
+    </ul>
+</div>
